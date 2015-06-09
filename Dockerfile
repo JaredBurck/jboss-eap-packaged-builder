@@ -1,4 +1,4 @@
-FROM  openshift/origin-docker-builder:latest
+FROM  openshift/origin-custom-docker-builder:latest
 
 MAINTAINER Andrew Block
 

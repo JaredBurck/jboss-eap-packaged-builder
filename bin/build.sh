@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Validate Environment Variables
 echo ">> Running JBoss EAP Builder"
 
@@ -34,6 +36,8 @@ REPOSITORY=${REPOSITORY:-$default_repository}
 
 TAG="${OUTPUT_REGISTRY}/${OUTPUT_IMAGE}"
 
+mkdir -p /tmp/build && cd /tmp/build
+
 # Create Docker File
 cat > Dockerfile << EOF
 FROM ${FROM_IMAGE_NAME}
@@ -45,9 +49,9 @@ RUN curl -L -sf -o /opt/eap/standalone/deployments/${ARTIFACT_ID}-${ARTIFACT_VER
 ENTRYPOINT ["/opt/eap/bin/openshift-launch.sh"]
 EOF
 
-echo ">> Building JBoss EAP Docker image"
+echo ">> Building JBoss EAP Docker image ${TAG}"
 # Run Docker build
-docker build --rm -t ${TAG}
+docker build --rm -t ${TAG} .
 
 echo ">> Pushing JBoss EAP Docker image"
 # Push to Docker
