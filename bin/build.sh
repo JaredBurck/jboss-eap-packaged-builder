@@ -5,7 +5,7 @@ set -e
 # Validate Environment Variables
 echo ">> Running JBoss EAP Builder"
 
-if [ -z "${ARTIFACT_HOST}" ]; then
+if [ -z "${ARTIFACT_REMOTE_HOST}" ]; then
   echo "Host for Artifact destination not provided"
   exit 1
 fi
@@ -43,7 +43,7 @@ cat > Dockerfile << EOF
 FROM ${FROM_IMAGE_NAME}
 
 # Download artifact
-RUN curl -L -sf -o /opt/eap/standalone/deployments/${ARTIFACT_ID}-${ARTIFACT_VERSION}.${PACKAGING} "http://${ARTIFACT_HOST}/nexus/service/local/artifact/maven/redirect?r=${REPOSITORY}&g=${ARTIFACT_GROUP_ID}&a=${ARTIFACT_ID}&v=${ARTIFACT_VERSION}&p=${PACKAGING}"
+RUN curl -L -sf -o /opt/eap/standalone/deployments/${ARTIFACT_ID}-${ARTIFACT_VERSION}.${PACKAGING} "http://${ARTIFACT_REMOTE_HOST}/nexus/service/local/artifact/maven/redirect?r=${REPOSITORY}&g=${ARTIFACT_GROUP_ID}&a=${ARTIFACT_ID}&v=${ARTIFACT_VERSION}&p=${PACKAGING}"
 
 # Start EAP
 ENTRYPOINT ["/opt/eap/bin/openshift-launch.sh"]
