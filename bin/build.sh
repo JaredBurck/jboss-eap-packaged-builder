@@ -51,8 +51,8 @@ EOF
 
 echo ">> Building JBoss EAP Docker image ${TAG}"
 # Run Docker build
-docker build --rm -t ${TAG} .
+docker build --no-cache --rm -t "${TAG}" .
 
 echo ">> Pushing JBoss EAP Docker image"
 # Push to Docker
-docker push ${TAG}
+docker push "${TAG}"
