@@ -53,6 +53,12 @@ echo ">> Building JBoss EAP Docker image ${TAG}"
 # Run Docker build
 docker build --no-cache --rm -t "${TAG}" .
 
-echo ">> Pushing JBoss EAP Docker image"
-# Push to Docker
-docker push "${TAG}"
+if [[ -d /var/run/secrets/openshift.io/push ]] && [[ ! -e /root/.dockercfg ]]; then
+  cp /var/run/secrets/openshift.io/push/.dockercfg /root/.dockercfg
+fi
+
+if [ -n "${OUTPUT_IMAGE}" ] || [ -s "/root/.dockercfg" ]; then
+	echo ">> Pushing JBoss EAP Docker image"
+	# Push to Docker
+	docker push "${TAG}"
+fi
