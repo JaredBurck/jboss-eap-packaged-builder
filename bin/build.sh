@@ -2,39 +2,30 @@
 
 set -e
 
-# Validate Environment Variables
+
+# Configure Defaults
+default_app_name="ROOT.war"
+default_image="registry.access.redhat.com/jboss-eap-6/eap-openshift:6.4"
+FROM_IMAGE_NAME=${IMAGE_NAME:-$default_image}
+TAG="${OUTPUT_REGISTRY}/${OUTPUT_IMAGE}"
+SRC_APP_NAME=${APP_SRC_NAME:-$default_app_name}
+DOCKER_SOCKET=/var/run/docker.sock
+
+
 echo ">> Running JBoss EAP Builder"
 
-if [ -z "${ARTIFACT_REMOTE_HOST}" ]; then
-  echo "Host for Artifact destination not provided"
+# Validate Parameters
+if [ ! -e "${DOCKER_SOCKET}" ]; then
+  echo "Error: Docker socket missing at ${DOCKER_SOCKET}"
   exit 1
 fi
 
-if [ -z "${ARTIFACT_GROUP_ID}" ]; then
-  echo "Maven Group ID for remote artifact not provided"
+
+if [ -z "${SRC_APP_URL}" ]; then
+  echo "Error: Application Source URL Not Provided!"
   exit 1
 fi
 
-if [ -z "${ARTIFACT_ID}" ]; then
-  echo "Maven Artifact ID not provided"
-  exit 1
-fi
-
-if [ -z "${ARTIFACT_VERSION}" ]; then
-  echo "Maven Artifact version not provided"
-  exit 1
-fi
-
-default_image="registry.access.redhat.com/jboss-eap-6/eap-openshift:6.4"
-default_packaging="war"
-default_repository="public"
-
-
-FROM_IMAGE_NAME=${IMAGE_NAME:-$default_image}
-PACKAGING=${ARTIFACT_PACKAGING:-$default_packaging}
-REPOSITORY=${REPOSITORY:-$default_repository}
-
-TAG="${OUTPUT_REGISTRY}/${OUTPUT_IMAGE}"
 
 mkdir -p /tmp/build && cd /tmp/build
 
@@ -43,13 +34,14 @@ cat > Dockerfile << EOF
 FROM ${FROM_IMAGE_NAME}
 
 # Download artifact
-RUN curl -L -sf -o /opt/eap/standalone/deployments/${ARTIFACT_ID}-${ARTIFACT_VERSION}.${PACKAGING} "http://${ARTIFACT_REMOTE_HOST}/nexus/service/local/artifact/maven/redirect?r=${REPOSITORY}&g=${ARTIFACT_GROUP_ID}&a=${ARTIFACT_ID}&v=${ARTIFACT_VERSION}&p=${PACKAGING}"
+RUN curl -L -fs -o "/opt/eap/standalone/deployments/${SRC_APP_NAME}" "${SRC_APP_URL}"
 
 # Start EAP
 ENTRYPOINT ["/opt/eap/bin/openshift-launch.sh"]
 EOF
 
 echo ">> Building JBoss EAP Docker image ${TAG}"
+
 # Run Docker build
 docker build --no-cache --rm -t "${TAG}" .
 
