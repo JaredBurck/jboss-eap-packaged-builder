@@ -82,9 +82,10 @@ if [ ! -z "${SRC_APP_URL}" ]; then
  
  curl -L -fs -o "${DEPLOY_DIR}/${SRC_APP_NAME}" "${SRC_APP_URL}"
  
- if [ $? -ne 0 ]; then
-   echo "Error retrieving packaged application due to error code $ERR"
-   exit $ERR
+ ERR_APP_RETRIEVAL=$?
+ if [ $ERR_APP_RETRIEVAL -ne 0 ]; then
+   echo "Error retrieving packaged application due to error code $ERR_APP_RETRIEVAL"
+   exit $ERR_APP_RETRIEVAL
  fi
  
 fi
