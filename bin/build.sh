@@ -5,7 +5,7 @@ set -e
 
 # Configure Defaults
 default_app_name="ROOT.war"
-default_image="registry.access.redhat.com/jboss-eap-6/eap-openshift:6.4"
+default_image="registry.access.redhat.com/jboss-eap-6/eap64-openshift:1.2"
 FROM_IMAGE_NAME=${IMAGE_NAME:-$default_image}
 TAG="${OUTPUT_REGISTRY}/${OUTPUT_IMAGE}"
 SRC_APP_NAME=${SRC_APP_NAME:-$default_app_name}
