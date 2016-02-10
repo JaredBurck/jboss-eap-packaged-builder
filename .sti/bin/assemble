@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Resulting WAR files will be deployed to /opt/eap/standalone/deployments
+DEPLOY_DIR=$JBOSS_HOME/standalone/deployments
+
 # Copy (probably binary) artifacts from the deployments/
 # directory to the $JBOSS_HOME/standalone/deployments/
 # directory for later deployment
