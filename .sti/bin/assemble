@@ -23,5 +23,5 @@ if [ ! -z "${SRC_APP_URL}" ]; then
  
 fi
 
-/usr/local/sti/assemble
+/usr/local/s2i/assemble
 #exit 0
