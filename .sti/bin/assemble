@@ -1,7 +1,9 @@
 #!/bin/sh
 
 # Resulting WAR files will be deployed to /opt/eap/standalone/deployments
-DEPLOY_DIR=$JBOSS_HOME/standalone/deployments
+# Source code provided to S2I is at ${HOME}/source                              
+DEPLOY_SOURCE_DIR=${HOME}/source/deployment
+mkdir -p $DEPLOY_SOURCE_DIR 
 
 # Copy (probably binary) artifacts from the deployments/
 # directory to the $JBOSS_HOME/standalone/deployments/
@@ -13,7 +15,7 @@ if [ ! -z "${SRC_APP_URL}" ]; then
  
  echo "Downloading packaged application source from ${SRC_APP_URL}..."
  
- curl -L -fs -o "${DEPLOY_DIR}/${SRC_APP_NAME}" "${SRC_APP_URL}"
+ curl -L -fs -o "${DEPLOY_SOURCE_DIR}/${SRC_APP_NAME}" "${SRC_APP_URL}"
  
  ERR_APP_RETRIEVAL=$?
  if [ $ERR_APP_RETRIEVAL -ne 0 ]; then
