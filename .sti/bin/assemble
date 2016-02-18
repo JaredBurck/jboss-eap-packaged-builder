@@ -1,5 +1,4 @@
 #!/bin/sh
-set +x
 
 # Resulting WAR files will be deployed to /opt/eap/standalone/deployments
 # Source code provided to S2I is at ${HOME}/source                              
@@ -11,8 +10,9 @@ mkdir -p $DEPLOY_SOURCE_DIR
 # directory for later deployment
 
 if [ ! -z "${SRC_APP_URL}" ]; then
- 
- SRC_APP_NAME=${SRC_APP_NAME:-"ROOT.ear"}
+
+ SRC_ROOT_APP=ROOT.${SRC_APP_URL##*=}
+ SRC_APP_NAME=${SRC_APP_NAME:-$SRC_ROOT_APP}
  
  echo "Downloading packaged application source from ${SRC_APP_URL}..."
  
