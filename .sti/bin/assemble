@@ -1,4 +1,5 @@
 #!/bin/sh
+set +x
 
 # Resulting WAR files will be deployed to /opt/eap/standalone/deployments
 # Source code provided to S2I is at ${HOME}/source                              
